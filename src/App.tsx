@@ -448,7 +448,7 @@ export default function App() {
             href="#"
             aria-disabled="true"
             className="text-blue-700 underline font-medium opacity-60 cursor-not-allowed"
-            title="Se agregará el enlace de descarga cuando el sitio github.io esté publicado"
+            title="https://github.com/parrafran87-dev/upre-alerta-temprana/blob/main/BOLETA%20ALERTA%20TEMPRANA.xlsm"
           >
             ⬇️ Machote oficial de Boletas AT (MEP) — enlace se agregará
           </a>
