@@ -443,14 +443,14 @@ export default function App() {
             className="text-blue-700 underline font-medium"
           >
             🔎 Consulta Registro Civil (TSE): nombre y cédula
-          </a>
-          <a
-            href="#"
-            aria-disabled="true"
-            className="text-blue-700 underline font-medium opacity-60 cursor-not-allowed"
-            title="https://github.com/parrafran87-dev/upre-alerta-temprana/blob/main/BOLETA%20ALERTA%20TEMPRANA.xlsm"
-          >
-            ⬇️ Machote oficial de Boletas AT (MEP) — enlace se agregará
+        </a>
+        <a
+          href="https://github.com/parrafran87-dev/upre-alerta-temprana/blob/main/Boleta%20Alerta%20Temprana.xlsm"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-700 underline font-medium"
+        >
+          👉 ⬇️ Descargar machote oficial de Boletas AT (MEP)
           </a>
           <div className="text-gray-600">
             Contacto: <a href="mailto:francini.ramirez.parra@mep.go.cr" className="underline">francini.ramirez.parra@mep.go.cr</a>
