@@ -445,7 +445,7 @@ export default function App() {
             🔎 Consulta Registro Civil (TSE): nombre y cédula
         </a>
         <a
-          href="https://github.com/parrafran87-dev/upre-alerta-temprana/blob/main/Boleta%20Alerta%20Temprana.xlsm"
+          href="https://raw.githubusercontent.com/parrafran87-dev/upre-alerta-temprana/main/Boleta%20Alerta%20Temprana.xlsm"
           target="_blank"
           rel="noopener noreferrer"
           className="text-blue-700 underline font-medium"
