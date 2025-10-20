@@ -450,7 +450,7 @@ export default function App() {
       rel="noopener noreferrer"
       className="text-blue-700 underline font-medium"
     >
-      👉 ⬇️ Descargar machote oficial de Boletas AT (MEP)
+      👉 ⬇️ Descargar machote oficial de Boletas Alerta Temprana (MEP)
     </a>
     <div className="text-gray-600">
       Contacto: <a href="mailto:francini.ramirez.parra@mep.go.cr" className="underline">francini.ramirez.parra@mep.go.cr</a>
