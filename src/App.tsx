@@ -434,29 +434,30 @@ export default function App() {
         </button>
       </div>
 
-      <footer className="mt-8 text-sm text-gray-700">
-        <div className="flex flex-col gap-2">
-          <a
-            href="https://servicioselectorales.tse.go.cr/chc/menu.htm"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-700 underline font-medium"
-          >
-            🔎 Consulta Registro Civil (TSE): nombre y cédula
-        </a>
-        <a
-          href="https://raw.githubusercontent.com/parrafran87-dev/upre-alerta-temprana/main/Boleta%20Alerta%20Temprana.xlsm"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-700 underline font-medium"
-        >
-          👉 ⬇️ Descargar machote oficial de Boletas AT (MEP)
-          </a>
-          <div className="text-gray-600">
-            Contacto: <a href="mailto:francini.ramirez.parra@mep.go.cr" className="underline">francini.ramirez.parra@mep.go.cr</a>
-          </div>
-        </div>
-      </footer>
+<footer className="mt-8 text-sm text-gray-700">
+  <div className="flex flex-col gap-2">
+    <a
+      href="https://servicioselectorales.tse.go.cr/chc/menu.htm"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-blue-700 underline font-medium"
+    >
+      🔎 Consulta Registro Civil (TSE): nombre y cédula
+    </a>
+    <a
+      href="https://raw.githubusercontent.com/parrafran87-dev/upre-alerta-temprana/main/Boleta%20Alerta%20Temprana.xlsm"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-blue-700 underline font-medium"
+    >
+      👉 ⬇️ Descargar machote oficial de Boletas AT (MEP)
+    </a>
+    <div className="text-gray-600">
+      Contacto: <a href="mailto:francini.ramirez.parra@mep.go.cr" className="underline">francini.ramirez.parra@mep.go.cr</a>
+    </div>
+  </div>
+</footer>
+
     </div>
   );
 }
