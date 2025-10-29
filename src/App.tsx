@@ -1,5 +1,10 @@
+"use client";
+
 import React, { useEffect, useMemo, useState } from "react";
 import ExcelJS, { Worksheet, Font } from "exceljs"; // Tipado TS
+
+// Archivo de plantilla (machote) alojado en GitHub RAW para carga/descarga directa
+const TEMPLATE_URL = "https://raw.githubusercontent.com/parrafran87-dev/upre-alerta-temprana/main/Boleta%20Alerta%20Temprana.xlsm";
 
 /************************* Utilidad de descarga ***************************/
 function saveFile(buffer: ArrayBuffer, filename: string) {
@@ -293,33 +298,61 @@ function applyHoja4Template(ws: Worksheet) {
 
 /************************* Generación XLSX ***************************/
 async function generateWorkbook(values: Values) {
-  const wb = new ExcelJS.Workbook();
-  const ws1 = wb.addWorksheet(SHEETS[0].slice(0, 31));
-  const ws2 = wb.addWorksheet(SHEETS[1].slice(0, 31));
-  const ws3 = wb.addWorksheet(SHEETS[2].slice(0, 31));
-  const ws4 = wb.addWorksheet(SHEETS[3].slice(0, 31));
+  let wb = new ExcelJS.Workbook();
+  let usedTemplate = false;
 
-  applyHoja1Template(ws1);
-  applyHoja2Template(ws2);
-  applyHoja3Template(ws3);
-  applyHoja4Template(ws4);
+  // 1) Intentar cargar el machote (xlsm) desde GitHub RAW.
+  try {
+    const resp = await fetch(TEMPLATE_URL, { cache: "no-store" });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const buf = await resp.arrayBuffer();
+    await wb.xlsx.load(buf); // Al guardar, ExcelJS exportará .xlsx (macros no se preservan)
+    usedTemplate = true;
+  } catch (e) {
+    // 2) Fallback: generar desde cero con nuestras plantillas si el fetch falla o CORS bloquea
+    wb = new ExcelJS.Workbook();
+    const ws1 = wb.addWorksheet(SHEETS[0].slice(0, 31));
+    const ws2 = wb.addWorksheet(SHEETS[1].slice(0, 31));
+    const ws3 = wb.addWorksheet(SHEETS[2].slice(0, 31));
+    const ws4 = wb.addWorksheet(SHEETS[3].slice(0, 31));
+    applyHoja1Template(ws1);
+    applyHoja2Template(ws2);
+    applyHoja3Template(ws3);
+    applyHoja4Template(ws4);
+  }
 
+  // Mapa de hojas: intentar por nombre y, si no existe, por índice
+  const wsByNameOrIndex = (name: SheetName, idx: number): Worksheet => {
+    const byName = wb.getWorksheet(name);
+    if (byName) return byName as Worksheet;
+    const byIndex = wb.worksheets[idx];
+    if (!byIndex) throw new Error(`No se encontró la hoja requerida: ${name}`);
+    return byIndex as Worksheet;
+  };
+
+  const ws1 = wsByNameOrIndex(SHEETS[0], 0);
+  const ws2 = wsByNameOrIndex(SHEETS[1], 1);
+  const ws3 = wsByNameOrIndex(SHEETS[2], 2);
+  const ws4 = wsByNameOrIndex(SHEETS[3], 3);
+  const wsMap: Record<SheetName, Worksheet> = {
+    [SHEETS[0]]: ws1,
+    [SHEETS[1]]: ws2,
+    [SHEETS[2]]: ws3,
+    [SHEETS[3]]: ws4,
+  } as const;
+
+  // Escribir datos
   for (const [fieldKey, targets] of Object.entries(MAP)) {
     let val = values[fieldKey] ?? "";
     if (fieldKey.includes("cedula") || fieldKey.includes("telefono")) val = val.replace(/-/g, "");
     if (fieldKey.includes("fecha")) val = formatDateToDDMMYYYY(val);
 
     for (const t of targets) {
-      const ws = ({
-        [SHEETS[0]]: ws1,
-        [SHEETS[1]]: ws2,
-        [SHEETS[2]]: ws3,
-        [SHEETS[3]]: ws4,
-      } as Record<SheetName, Worksheet>)[t.sheet];
-      if (!ws) continue;
-
+      const ws = wsMap[t.sheet];
       const { range, anchor } = normalizeRange(t.addr);
-      if (range.includes(":")) {
+
+      // En plantilla: NO forzar merges (el machote ya define los merges). Desde cero: aplicar merge si corresponde.
+      if (!usedTemplate && range.includes(":")) {
         try { ws.mergeCells(range); } catch {}
       }
       const cell = ws.getCell(anchor);
@@ -330,7 +363,8 @@ async function generateWorkbook(values: Values) {
   }
 
   const buffer = await wb.xlsx.writeBuffer();
-  saveFile(buffer as ArrayBuffer, "Boletas_Alerta_Temprana.xlsx");
+  // Nota: aunque la plantilla es .xlsm, ExcelJS exporta .xlsx y se pierden macros. Si necesitas conservar macros, se requerirá otra estrategia.
+  saveFile(buffer as ArrayBuffer, "Boleta_Alerta_Temprana.xlsx");
 }
 
 /************************* Autotests ligeros ***************************/
@@ -430,34 +464,26 @@ export default function App() {
 
       <div>
         <button className="px-4 py-2 bg-blue-600 text-white rounded" onClick={onGenerate}>
-          Generar Excel
+          Descargar machote con datos
         </button>
       </div>
 
-<footer className="mt-8 text-sm text-gray-700">
-  <div className="flex flex-col gap-2">
-    <a
-      href="https://servicioselectorales.tse.go.cr/chc/menu.htm"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="text-blue-700 underline font-medium"
-    >
-      🔎 Consulta Registro Civil (TSE): nombre y cédula
-    </a>
-    <a
-      href="https://raw.githubusercontent.com/parrafran87-dev/upre-alerta-temprana/main/Boleta%20Alerta%20Temprana.xlsm"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="text-blue-700 underline font-medium"
-    >
-      👉 ⬇️ Descargar machote oficial de Boletas Alerta Temprana (MEP)
-    </a>
-    <div className="text-gray-600">
-      Contacto: <a href="mailto:francini.ramirez.parra@mep.go.cr" className="underline">francini.ramirez.parra@mep.go.cr</a>
-    </div>
-  </div>
-</footer>
-
+      <footer className="mt-8 text-sm text-gray-700">
+        <div className="flex flex-col gap-2">
+          <a
+            href="https://servicioselectorales.tse.go.cr/chc/menu.htm"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-700 underline font-medium"
+          >
+            🔎 Consulta Registro Civil (TSE): nombre y cédula
+          </a>
+                    <div className="text-gray-600">
+            Contacto: <a href="mailto:francini.ramirez.parra@mep.go.cr" className="underline">francini.ramirez.parra@mep.go.cr</a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
+
