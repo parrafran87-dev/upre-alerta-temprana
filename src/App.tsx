@@ -479,7 +479,7 @@ export default function App() {
             🔎 Consulta Registro Civil (TSE): nombre y cédula
           </a>
                     <div className="text-gray-600">
-            Contacto: <a href="mailto:francini.ramirez.parra@mep.go.cr" className="underline">francini.ramirez.parra@mep.go.cr</a>
+            Contacto: <a href="mailto:lic.sanrafael.alajuela@mep.go.cr" className="underline">lic.sanrafael.alajuela@mep.go.cr</a>
           </div>
         </div>
       </footer>
