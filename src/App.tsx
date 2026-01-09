@@ -411,21 +411,31 @@ export default function App() {
     await generateWorkbook(values);
   }
 
-  return (
-    <div className="min-h-screen w-full p-6 bg-gray-50 flex flex-col gap-6">
-      <DevChecks />
+return (
+  <div className="min-h-screen w-full bg-gray-50">
+    <DevChecks />
 
+    <div className="mx-auto max-w-6xl p-4 flex flex-col gap-4">
       <header className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-blue-700">Generador de Alerta Temprana. UPRE</h1>
+        <h1 className="text-lg font-bold text-blue-700">
+          Generador de Alerta Temprana. UPRE
+        </h1>
       </header>
 
-      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {/* FORMULARIO EN 3 COLUMNAS */}
+      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
         {FIELDS.map((f: FieldDef) => (
-          <label key={f.key} className="bg-white border rounded-xl p-3 flex flex-col">
-            <span className="text-sm font-medium">{f.label}</span>
+          <label
+            key={f.key}
+            className="bg-white border rounded-lg p-2 flex flex-col gap-1"
+          >
+            <span className="text-xs font-semibold text-gray-700">
+              {f.label}
+            </span>
+
             {f.type === "select" ? (
               <select
-                className="mt-1 border rounded p-2"
+                className="w-full border rounded-md px-2 py-1 text-sm"
                 value={values[f.key]}
                 onChange={(e) => setValue(f.key, e.target.value)}
               >
@@ -439,36 +449,44 @@ export default function App() {
             ) : f.type === "date" ? (
               <input
                 type="date"
-                className="mt-1 border rounded p-2"
+                className="w-full border rounded-md px-2 py-1 text-sm"
                 value={values[f.key]}
                 onChange={(e) => setValue(f.key, e.target.value)}
               />
             ) : (
               <input
-                className="mt-1 border rounded p-2"
+                className="w-full border rounded-md px-2 py-1 text-sm"
                 placeholder={f.placeholder || ""}
                 value={values[f.key]}
                 onChange={(e) => setValue(f.key, e.target.value)}
               />
             )}
+
             {MAP[f.key]?.length ? (
-              <span className="mt-1 text-xs text-indigo-700">
-                {(MAP[f.key] as Target[]).map((t: Target) => `${t.sheet}:${t.addr}`).join("  ·  ")}
+              <span className="text-[11px] text-indigo-700 leading-tight">
+                {(MAP[f.key] as Target[])
+                  .map((t: Target) => `${t.sheet}:${t.addr}`)
+                  .join(" · ")}
               </span>
             ) : (
-              <span className="mt-1 text-xs text-gray-400">(sin destino configurado)</span>
+              <span className="text-[11px] text-gray-400">
+                (sin destino configurado)
+              </span>
             )}
           </label>
         ))}
       </section>
 
-      <div>
-        <button className="px-4 py-2 bg-blue-600 text-white rounded" onClick={onGenerate}>
-          Descargar machote con datos
+      <div className="pt-2">
+        <button
+          className="px-3 py-1.5 bg-blue-600 text-white rounded-md text-sm"
+          onClick={onGenerate}
+        >
+          Generar Excel
         </button>
       </div>
 
-      <footer className="mt-8 text-sm text-gray-700">
+      <footer className="mt-6 text-sm text-gray-700">
         <div className="flex flex-col gap-2">
           <a
             href="https://servicioselectorales.tse.go.cr/chc/menu.htm"
@@ -478,12 +496,29 @@ export default function App() {
           >
             🔎 Consulta Registro Civil (TSE): nombre y cédula
           </a>
-                    <div className="text-gray-600">
-            Contacto: <a href="mailto:lic.sanrafael.alajuela@mep.go.cr" className="underline">lic.sanrafael.alajuela@mep.go.cr</a>
+
+          <a
+            href="#"
+            aria-disabled="true"
+            className="text-blue-700 underline font-medium opacity-60 cursor-not-allowed"
+            title="Se agregará el enlace de descarga cuando el sitio github.io esté publicado"
+          >
+            ⬇️ Machote oficial de Boletas AT (MEP)
+          </a>
+
+          <div className="text-gray-600">
+            Contacto:{" "}
+            <a
+              href="mailto:francini.ramirez.parra@mep.go.cr"
+              className="underline"
+            >
+              francini.ramirez.parra@mep.go.cr
+            </a>
           </div>
         </div>
       </footer>
     </div>
-  );
-}
+  </div>
+);
+
 
